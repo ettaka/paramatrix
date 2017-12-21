@@ -1,13 +1,19 @@
+#!/usr/bin/env python
+
 import matplotlib.pyplot as plt
 import numpy as np
+import argparse
 
-def samplemat(dims):
-    aa = np.zeros(dims)
-    for i in range(min(dims)):
-        aa[i,i]=i
-    return aa
 
-nof_partitions = 4
+parser = argparse.ArgumentParser(description='Show parallel matrix data')
+
+parser.add_argument('basefile', type=str, help="file base (partition number follows this, for example cm0, cm1, cm2, ...)", default='cm')
+parser.add_argument('-n', '--nof-partitions', type=int, help="How many partitions the matrix has?")
+
+args = parser.parse_args()
+basefile = args.basefile
+nof_partitions = args.nof_partitions
+
 cm_arrays = []
 max_coord_i = []
 max_coord_j = []
@@ -15,7 +21,7 @@ min_coord_i = []
 min_coord_j = []
 cms = []
 for i in range(nof_partitions):
-    cm_arrays.append(np.loadtxt("cm"+str(i)))
+    cm_arrays.append(np.loadtxt(basefile+str(i)))
     max_coord_i.append(0)
     max_coord_j.append(0)
     min_coord_i.append(0)
