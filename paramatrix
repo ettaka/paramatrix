@@ -7,11 +7,11 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Show parallel matrix data')
 
-parser.add_argument('basefile', type=str, help="file base (partition number follows this, for example cm0, cm1, cm2, ...)", default='cm')
+parser.add_argument('-b', '--base-file', type=str, help="file base (partition number follows this, for example cm0, cm1, cm2, ...)", default='cm')
 parser.add_argument('-n', '--nof-partitions', type=int, help="How many partitions the matrix has?")
 
 args = parser.parse_args()
-basefile = args.basefile
+basefile = args.base_file
 nof_partitions = args.nof_partitions
 
 cm_arrays = []
