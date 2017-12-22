@@ -61,17 +61,17 @@ if __name__=="__main__":
 
     matrix_partitions = []
     for i in range(nof_partitions):
-        matrix_partitions.append(np.zeros((total_max_coord_i, total_max_coord_j)))
+        matrix_partitions.append(np.zeros((total_max_coord_i+1, total_max_coord_j+1)))
         for rows in matrix_arrays[i]:
-            j = int(rows[0])-1
-            k = int(rows[1])-1
+            j = int(rows[0])
+            k = int(rows[1])
             value = rows[2]
             if np.abs(value) > 0.0001:
                 matrix_partitions[i][j][k] = i+1
         if show_partitions:
             plt.matshow(matrix_partitions[i])
 
-    total_matrix_partitions = np.zeros((total_max_coord_i, total_max_coord_j))
+    total_matrix_partitions = np.zeros((total_max_coord_i+1, total_max_coord_j+1))
     for matrix_partition in matrix_partitions:
         total_matrix_partitions += matrix_partition
 
