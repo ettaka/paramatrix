@@ -62,10 +62,10 @@ if __name__=="__main__":
         #plt.matshow(matrix_partitions[i][min_coord_i[i]:, min_coord_j[i]:])
         #plt.matshow(matrix_partitions[i][max_coord[i][0]-10:, 0:])
 
-    total_cm = np.zeros((total_max_coord_i, total_max_coord_j))
-    for cm in matrix_partitions:
-        total_cm += cm
+    total_matrix_partitions = np.zeros((total_max_coord_i, total_max_coord_j))
+    for matrix_partition in matrix_partitions:
+        total_matrix_partitions += matrix_partition
 
-    plt.matshow(total_cm)
+    plt.matshow(total_matrix_partitions)
 
     plt.show()
