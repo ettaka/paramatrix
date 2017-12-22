@@ -4,58 +4,68 @@ import matplotlib.pyplot as plt
 import numpy as np
 import argparse
 
+def fetch_matrix_arrays():
+    arrays = []
+    for i in range(nof_partitions):
+        arrays.append(np.loadtxt(basefile+str(i)))
+    return arrays
+ 
+def count_coordinate_extrema(arrays):
+    max_coord_i = []
+    max_coord_j = []
+    min_coord_i = []
+    min_coord_j = []
+    for i in range(nof_partitions):
+        max_coord_i.append(0)
+        max_coord_j.append(0)
+        min_coord_i.append(0)
+        min_coord_j.append(0)
+        max_coord_i[i] = int(np.max(arrays[i].transpose()[0]))
+        max_coord_j[i] = int(np.max(arrays[i].transpose()[1]))
+        min_coord_i[i] = int(np.min(arrays[i].transpose()[0]))
+        min_coord_j[i] = int(np.min(arrays[i].transpose()[1]))
 
-parser = argparse.ArgumentParser(description='Show parallel matrix data')
+    print min_coord_i, min_coord_j, max_coord_i, max_coord_j
 
-parser.add_argument('-b', '--base-file', type=str, help="file base (partition number follows this, for example cm0, cm1, cm2, ...)", default='cm')
-parser.add_argument('-n', '--nof-partitions', type=int, help="How many partitions the matrix has?")
+    total_max_coord_i = max(max_coord_i)
+    total_max_coord_j = max(max_coord_j)
+    total_min_coord_i = min(min_coord_i)
+    total_min_coord_j = min(min_coord_j)
+    return total_max_coord_i, total_max_coord_j, total_min_coord_i, total_min_coord_j
 
-args = parser.parse_args()
-basefile = args.base_file
-nof_partitions = args.nof_partitions
 
-cm_arrays = []
-max_coord_i = []
-max_coord_j = []
-min_coord_i = []
-min_coord_j = []
-cms = []
-for i in range(nof_partitions):
-    cm_arrays.append(np.loadtxt(basefile+str(i)))
-    max_coord_i.append(0)
-    max_coord_j.append(0)
-    min_coord_i.append(0)
-    min_coord_j.append(0)
-    max_coord_i[i] = int(np.max(cm_arrays[i].transpose()[0]))
-    max_coord_j[i] = int(np.max(cm_arrays[i].transpose()[1]))
-    min_coord_i[i] = int(np.min(cm_arrays[i].transpose()[0]))
-    min_coord_j[i] = int(np.min(cm_arrays[i].transpose()[1]))
+if __name__=="__main__":
+    parser = argparse.ArgumentParser(description='Show parallel matrix data')
 
-print min_coord_i, min_coord_j, max_coord_i, max_coord_j
+    parser.add_argument('-b', '--base-file', type=str, help="file base (partition number follows this, for example cm0, cm1, cm2, ...)", default='cm')
+    parser.add_argument('-n', '--nof-partitions', type=int, help="How many partitions the matrix has?")
 
-total_max_coord_i = max(max_coord_i)
-total_max_coord_j = max(max_coord_j)
-total_min_coord_i = min(min_coord_i)
-total_min_coord_j = min(min_coord_j)
+    args = parser.parse_args()
+    basefile = args.base_file
+    nof_partitions = args.nof_partitions
 
-print total_min_coord_i, total_min_coord_j, total_max_coord_i, total_max_coord_j
+    matrix_arrays = fetch_matrix_arrays()
 
-for i in range(nof_partitions):
-    cms.append(np.zeros((total_max_coord_i, total_max_coord_j)))
-    for rows in cm_arrays[i]:
-        j = int(rows[0])-1
-        k = int(rows[1])-1
-        value = rows[2]
-        if np.abs(value) > 0.0001:
-            cms[i][j][k] = i+1
-    #plt.matshow(cms[i])
-    #plt.matshow(cms[i][min_coord_i[i]:, min_coord_j[i]:])
-    #plt.matshow(cms[i][max_coord[i][0]-10:, 0:])
+    total_max_coord_i, total_max_coord_j, total_min_coord_i, total_min_coord_j = count_coordinate_extrema(matrix_arrays)
+    print total_min_coord_i, total_min_coord_j, total_max_coord_i, total_max_coord_j
 
-total_cm = np.zeros((total_max_coord_i, total_max_coord_j))
-for cm in cms:
-    total_cm += cm
+    cms = []
+    for i in range(nof_partitions):
+        cms.append(np.zeros((total_max_coord_i, total_max_coord_j)))
+        for rows in matrix_arrays[i]:
+            j = int(rows[0])-1
+            k = int(rows[1])-1
+            value = rows[2]
+            if np.abs(value) > 0.0001:
+                cms[i][j][k] = i+1
+        #plt.matshow(cms[i])
+        #plt.matshow(cms[i][min_coord_i[i]:, min_coord_j[i]:])
+        #plt.matshow(cms[i][max_coord[i][0]-10:, 0:])
 
-plt.matshow(total_cm)
+    total_cm = np.zeros((total_max_coord_i, total_max_coord_j))
+    for cm in cms:
+        total_cm += cm
 
-plt.show()
+    plt.matshow(total_cm)
+
+    plt.show()
