@@ -20,10 +20,11 @@ def count_coordinate_extrema(arrays):
         max_coord_j.append(0)
         min_coord_i.append(0)
         min_coord_j.append(0)
-        max_coord_i[i] = int(np.max(arrays[i].transpose()[0]))
-        max_coord_j[i] = int(np.max(arrays[i].transpose()[1]))
-        min_coord_i[i] = int(np.min(arrays[i].transpose()[0]))
-        min_coord_j[i] = int(np.min(arrays[i].transpose()[1]))
+        transposed = arrays[i].transpose()
+        max_coord_i[i] = int(np.max(transposed[0]))
+        max_coord_j[i] = int(np.max(transposed[1]))
+        min_coord_i[i] = int(np.min(transposed[0]))
+        min_coord_j[i] = int(np.min(transposed[1]))
 
     print min_coord_i, min_coord_j, max_coord_i, max_coord_j
 
