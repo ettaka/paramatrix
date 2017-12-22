@@ -49,21 +49,21 @@ if __name__=="__main__":
     total_max_coord_i, total_max_coord_j, total_min_coord_i, total_min_coord_j = count_coordinate_extrema(matrix_arrays)
     print total_min_coord_i, total_min_coord_j, total_max_coord_i, total_max_coord_j
 
-    cms = []
+    matrix_partitions = []
     for i in range(nof_partitions):
-        cms.append(np.zeros((total_max_coord_i, total_max_coord_j)))
+        matrix_partitions.append(np.zeros((total_max_coord_i, total_max_coord_j)))
         for rows in matrix_arrays[i]:
             j = int(rows[0])-1
             k = int(rows[1])-1
             value = rows[2]
             if np.abs(value) > 0.0001:
-                cms[i][j][k] = i+1
-        #plt.matshow(cms[i])
-        #plt.matshow(cms[i][min_coord_i[i]:, min_coord_j[i]:])
-        #plt.matshow(cms[i][max_coord[i][0]-10:, 0:])
+                matrix_partitions[i][j][k] = i+1
+        #plt.matshow(matrix_partitions[i])
+        #plt.matshow(matrix_partitions[i][min_coord_i[i]:, min_coord_j[i]:])
+        #plt.matshow(matrix_partitions[i][max_coord[i][0]-10:, 0:])
 
     total_cm = np.zeros((total_max_coord_i, total_max_coord_j))
-    for cm in cms:
+    for cm in matrix_partitions:
         total_cm += cm
 
     plt.matshow(total_cm)
