@@ -3,11 +3,18 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
+import os.path
 
-def fetch_matrix_arrays():
+
+def fetch_matrix_arrays(base_name):
     arrays = []
     for i in range(nof_partitions):
-        arrays.append(np.loadtxt(basefile+str(i)))
+        filename = base_name+str(i)
+        if os.path.isfile(filename):
+            arrays.append(np.loadtxt(filename))
+        else:
+            print "Matrix file", filename, "does not exist! Adding empty matrix"
+            arrays.append(np.array([[0, 0, 0]]))
     return arrays
  
 def count_coordinate_extrema(arrays):
@@ -38,16 +45,16 @@ def count_coordinate_extrema(arrays):
 if __name__=="__main__":
     parser = argparse.ArgumentParser(description='Show parallel matrix data')
 
-    parser.add_argument('-b', '--base-file', type=str, help="file base (partition number follows this, for example cm0, cm1, cm2, ...)", default='cm')
+    parser.add_argument('-b', '--base-name', type=str, help="file base (partition number follows this, for example cm0, cm1, cm2, ...)", default='cm')
     parser.add_argument('-n', '--nof-partitions', type=int, help="How many partitions the matrix has?")
     parser.add_argument('-a', '--show-partitions', action='store_true', help="Show all partitions")
 
     args = parser.parse_args()
-    basefile = args.base_file
+    base_name = args.base_name
     nof_partitions = args.nof_partitions
     show_partitions = args.show_partitions
 
-    matrix_arrays = fetch_matrix_arrays()
+    matrix_arrays = fetch_matrix_arrays(base_name)
 
     total_max_coord_i, total_max_coord_j, total_min_coord_i, total_min_coord_j = count_coordinate_extrema(matrix_arrays)
     print total_min_coord_i, total_min_coord_j, total_max_coord_i, total_max_coord_j
