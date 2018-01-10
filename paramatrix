@@ -47,17 +47,19 @@ if __name__=="__main__":
 
     parser.add_argument('-b', '--base-name', type=str, help="file base (partition number follows this, for example cm0, cm1, cm2, ...)", default='cm')
     parser.add_argument('-n', '--nof-partitions', type=int, help="How many partitions the matrix has?")
-    parser.add_argument('-a', '--show-partitions', action='store_true', help="Show all partitions")
+    parser.add_argument('-a', '--show-all-partitions', action='store_true', help="Show all partitions")
+    parser.add_argument('-s', '--show-partitions', type=int, nargs='*', help="Show only selected partitions")
 
     args = parser.parse_args()
     base_name = args.base_name
     nof_partitions = args.nof_partitions
+    show_all_partitions = args.show_all_partitions
     show_partitions = args.show_partitions
 
     matrix_arrays = fetch_matrix_arrays(base_name)
 
     total_max_coord_i, total_max_coord_j, total_min_coord_i, total_min_coord_j = count_coordinate_extrema(matrix_arrays)
-    print total_min_coord_i, total_min_coord_j, total_max_coord_i, total_max_coord_j
+    #print total_min_coord_i, total_min_coord_j, total_max_coord_i, total_max_coord_j
 
     matrix_partitions = []
     for i in range(nof_partitions):
@@ -68,7 +70,9 @@ if __name__=="__main__":
             value = rows[2]
             if np.abs(value) > 0.0001:
                 matrix_partitions[i][j][k] = i+1
-        if show_partitions:
+        if show_all_partitions:
+            plt.matshow(matrix_partitions[i])
+        if (i+1) in show_partitions:
             plt.matshow(matrix_partitions[i])
 
     total_matrix_partitions = np.zeros((total_max_coord_i+1, total_max_coord_j+1))
