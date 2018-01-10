@@ -62,6 +62,7 @@ if __name__=="__main__":
         select_partitions = args.select_partitions
     show_merged_partitions = args.show_merged_partitions
     show_individual_partitions = args.show_individual_partitions
+    if not (show_merged_partitions or show_individual_partitions): show_merged_partitions = True
 
     matrix_arrays = fetch_matrix_arrays(base_name)
 
@@ -81,9 +82,10 @@ if __name__=="__main__":
             plt.matshow(matrix_partitions[i])
 
     total_matrix_partitions = np.zeros((total_max_coord_i+1, total_max_coord_j+1))
-    for i, matrix_partition in enumerate(matrix_partitions):
-        if (i+1) in select_partitions: total_matrix_partitions += matrix_partition
+    if show_merged_partitions:
+        for i, matrix_partition in enumerate(matrix_partitions):
+            if (i+1) in select_partitions: total_matrix_partitions += matrix_partition
 
-    plt.matshow(total_matrix_partitions)
+        plt.matshow(total_matrix_partitions)
 
     plt.show()
